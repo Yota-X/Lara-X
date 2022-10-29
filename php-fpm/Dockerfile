@@ -1,4 +1,6 @@
-FROM php:7.4-fpm
+ARG  PHP_VERSION=${PHP_VERSION}
+
+FROM php:${PHP_VERSION}-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -12,10 +14,15 @@ RUN apt-get update && apt-get install -y \
     locales \
     libonig-dev \
     libwebp-dev \
+    libsodium-dev \
     libpng-dev \
+    libgmp-dev \
     zip \
     pkg-config \
-    jpegoptim optipng pngquant gifsicle \
+    jpegoptim \
+    optipng \
+    pngquant \
+    gifsicle \
     vim \
     unzip \
     git \
@@ -26,7 +33,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
-RUN docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli zip curl
+RUN docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli zip curl sodium gmp
 
 RUN pecl install memcached
 

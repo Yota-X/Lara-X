@@ -1,4 +1,6 @@
-FROM nginx:1.22.0-alpine
+ARG NGINX_VERSION=${NGINX_VERSION}
+
+FROM nginx:${NGINX_VERSION}-alpine
 
 # Install system dependencies
 RUN apk update \
