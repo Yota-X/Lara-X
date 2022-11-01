@@ -48,7 +48,7 @@ services:
         PHP_VERSION: ${PHP_VERSION}
     volumes:
       - ./app/:/var/www/html/
-      - ./php-fpm/config/:/usr/local/etc/php/
+      - ./php-fpm/config/php.ini:/usr/local/etc/php/php.ini:ro
     depends_on:
       - db
     ports:

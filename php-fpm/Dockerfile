@@ -9,14 +9,27 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
+    freetds-bin \
+    libpq-dev \
+    freetds-dev \
+    libtidy-dev \
+    libxslt-dev \
+    freetds-common \
+    libsnmp-dev \
     libmemcached-dev \
     libzip-dev \
     locales \
+    libc-client-dev \
+    libkrb5-dev \
+    libbz2-dev \
+    libssl-dev \
     libonig-dev \
     libwebp-dev \
     libsodium-dev \
     libpng-dev \
     libgmp-dev \
+    libonig-dev \
+    libxml2-dev \
     zip \
     pkg-config \
     jpegoptim \
@@ -32,10 +45,36 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
-RUN docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli zip curl sodium gmp
+RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/
 
-RUN pecl install memcached
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
+RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
+RUN docker-php-ext-install -j$(nproc) \ 
+    bcmath \
+    bz2 \
+    calendar \
+    exif \
+    gd \
+    gettext \
+    gmp \
+    imap \
+    intl \
+    mysqli \
+    pdo_dblib \
+    pdo_mysql \
+    pdo_pgsql \
+    shmop \
+    snmp \
+    soap \
+    sockets \
+    sysvmsg \
+    sysvsem \
+    sysvshm \
+    tidy \
+    xsl 
+
+# Install Redis plugin
+RUN pecl install redis
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -47,6 +86,7 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 # Set user for running
 USER www
 
+# Port exposing
 EXPOSE 9000
 
 CMD ["php-fpm"]
